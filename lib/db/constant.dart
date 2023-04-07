@@ -3,3 +3,5 @@ const mongoURI =
 const usersCollection = "users";
 const marksCollection = "marks";
 const subjectsCollection = "subjects";
+
+const jwt_secret = "CMS_Flutter";

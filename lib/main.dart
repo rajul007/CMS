@@ -1,5 +1,6 @@
 import 'package:cms/db/mongodb.dart';
 import 'package:cms/marks/display.dart';
+import 'package:cms/users/login.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: DisplayMarks(),
+      home: Login(),
     );
   }
 }

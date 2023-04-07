@@ -12,10 +12,6 @@ class DisplayMarks extends StatefulWidget {
 }
 
 class _DisplayMarksState extends State<DisplayMarks> {
-  // md.ObjectId user =
-  //       ModalRoute.of(context)!.settings.arguments as md.ObjectId;
-
-  md.ObjectId user = md.ObjectId.fromHexString("6429b4166ca545552b9f3700");
   var courseCode = TextEditingController();
   Map<String, dynamic> studentMarks = {
     "ct1": 0,
@@ -29,8 +25,11 @@ class _DisplayMarksState extends State<DisplayMarks> {
   bool isVisible = false;
   @override
   Widget build(BuildContext context) {
+    Map<String, dynamic> user =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text('CMS'),
       ),
       body: SafeArea(
@@ -52,7 +51,9 @@ class _DisplayMarksState extends State<DisplayMarks> {
                 ),
                 SizedBox(width: 5),
                 ElevatedButton(
-                    onPressed: () => _getSubject(courseCode.text),
+                    onPressed: () => _getSubject(
+                        md.ObjectId.fromHexString(user["user"]),
+                        courseCode.text),
                     child: Text("Submit"))
               ],
             ),
@@ -68,7 +69,7 @@ class _DisplayMarksState extends State<DisplayMarks> {
     );
   }
 
-  Future<void> _getSubject(String courseCode) async {
+  Future<void> _getSubject(md.ObjectId user, String courseCode) async {
     var result = await MongoDatabase.getSubject(courseCode);
     print(result);
 
