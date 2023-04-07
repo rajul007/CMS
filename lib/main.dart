@@ -1,4 +1,5 @@
 import 'package:cms/db/mongodb.dart';
+import 'package:cms/marks/display.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const SafeArea(child: Text("Flutter Home")),
+      home: DisplayMarks(),
     );
   }
 }

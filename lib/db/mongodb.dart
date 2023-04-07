@@ -14,4 +14,35 @@ class MongoDatabase {
     marks = db.collection(marksCollection);
     subjects = db.collection(subjectsCollection);
   }
+
+  static Future<dynamic> getSubject(String courseCode) async {
+    var subject = await subjects.findOne({"courseCode": courseCode});
+    if (subject == null)
+      return 0;
+    else {
+      Map<String, dynamic> subjectDetails = {
+        "id": subject["_id"],
+        "courseName": subject["courseName"],
+      };
+      return subjectDetails;
+    }
+  }
+
+  static Future<dynamic> getMarks(ObjectId student, ObjectId courseId) async {
+    var record = await marks.findOne({"subject": courseId, "student": student});
+    if (record == null) {
+      return 0;
+    } else {
+      Map<String, dynamic> marksDetails = {
+        "ct1": record["ct1"],
+        "ct2": record["ct2"],
+        "ca": record["ca"],
+        "dha": record["dha"],
+        "aa": record["aa"],
+        "attendance": record["attendance"],
+        "grade": record["grade"],
+      };
+      return marksDetails;
+    }
+  }
 }
