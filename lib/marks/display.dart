@@ -1,7 +1,8 @@
 import 'dart:math';
-
 import 'package:cms/db/mongodb.dart';
+import 'package:cms/users/login.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mongo_dart/mongo_dart.dart' as md;
 
 class DisplayMarks extends StatefulWidget {
@@ -31,6 +32,9 @@ class _DisplayMarksState extends State<DisplayMarks> {
       appBar: AppBar(
         centerTitle: true,
         title: Text('CMS'),
+        actions: [
+          IconButton(onPressed: () => _logout(), icon: Icon(Icons.logout))
+        ],
       ),
       body: SafeArea(
           child: Column(
@@ -205,5 +209,15 @@ class _DisplayMarksState extends State<DisplayMarks> {
         studentMarks["aa"] +
         studentMarks["attendance"];
     return total;
+  }
+
+  void _logout() async {
+    final storage = new FlutterSecureStorage();
+    await storage.deleteAll();
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+      builder: (BuildContext context) {
+        return const Login();
+      },
+    ), (route) => false);
   }
 }
