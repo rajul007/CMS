@@ -29,45 +29,78 @@ class _DisplayMarksState extends State<DisplayMarks> {
     Map<String, dynamic> user =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     return Scaffold(
+      backgroundColor: Colors.grey[300],
       drawer: drawerDetails(user),
       appBar: AppBar(
         centerTitle: true,
-        title: Text('CMS'),
+        // title: Text("CMS"),
+        title: Container(
+          margin: EdgeInsets.only(
+              right: MediaQuery.of(context).size.width / 2 - 150),
+          // color: Colors.red,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.school),
+              SizedBox(
+                width: 5,
+              ),
+              Text("CMS"),
+            ],
+          ),
+        ),
       ),
-      body: SafeArea(
-          child: Column(
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.all(15),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: courseCode,
-                    decoration: InputDecoration(
-                      labelText: "Course Code",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10)),
+      body: SingleChildScrollView(
+        child: SafeArea(
+            child: Column(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.all(15),
+              padding: EdgeInsets.only(top: 15),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: courseCode,
+                      decoration: InputDecoration(
+                        labelText: "Course Code",
+                        contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(30)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey.shade400),
+                            borderRadius: BorderRadius.circular(30)),
+                        fillColor: Colors.grey.shade200,
+                        filled: true,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(width: 5),
-                ElevatedButton(
-                    onPressed: () => _getSubject(
-                        md.ObjectId.fromHexString(user["user"]),
-                        courseCode.text),
-                    child: Text("Submit"))
-              ],
+                  SizedBox(width: 10),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          foregroundColor: Colors.white,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 30, vertical: 15),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0))),
+                      onPressed: () => _getSubject(
+                          md.ObjectId.fromHexString(user["user"]),
+                          courseCode.text.toUpperCase()),
+                      child: Text("Submit"))
+                ],
+              ),
             ),
-          ),
-          Center(
-            child: Container(
-              margin: EdgeInsets.all(15),
-              child: displayMarksTable(studentMarks),
-            ),
-          )
-        ],
-      )),
+            Center(
+              child: Container(
+                margin: EdgeInsets.all(15),
+                child: displayMarksTable(studentMarks),
+              ),
+            )
+          ],
+        )),
+      ),
     );
   }
 
@@ -87,18 +120,17 @@ class _DisplayMarksState extends State<DisplayMarks> {
 
   Widget buildHeader(BuildContext context, Map<String, dynamic> user) =>
       Container(
-        color: Color.fromARGB(255, 58, 140, 221),
+        color: Color.fromARGB(190, 0, 0, 0),
         padding: EdgeInsets.only(
             top: 20 + MediaQuery.of(context).padding.top, bottom: 20),
         child: Column(
           children: [
             CircleAvatar(
               radius: 50,
-              backgroundColor: Colors.blue[100],
+              backgroundColor: Colors.grey[300],
               child: Text(
                 "${user["name"][0].toUpperCase()}",
-                style: TextStyle(
-                    fontSize: 40, color: Color.fromARGB(199, 11, 67, 165)),
+                style: TextStyle(fontSize: 40, color: Colors.black54),
               ),
             ),
             SizedBox(
@@ -173,98 +205,134 @@ class _DisplayMarksState extends State<DisplayMarks> {
         ? Text("No Records to display")
         : Visibility(
             visible: isVisible,
-            child: Table(
-              children: [
-                TableRow(children: [
-                  Text(
+            child: DataTable(
+              columns: [
+                DataColumn(
+                  label: Text(
                     "Components",
                     style:
-                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                        TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                   ),
-                  Text(
+                ),
+                DataColumn(
+                  label: Text(
                     "Marks",
                     style:
-                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                        TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+              rows: [
+                DataRow(cells: [
+                  DataCell(
+                    Text(
+                      "CT1",
+                      style: TextStyle(fontSize: 15.0),
+                    ),
+                  ),
+                  DataCell(
+                    Text(
+                      studentMarks['ct1'].toString(),
+                      style: TextStyle(fontSize: 15.0),
+                    ),
                   ),
                 ]),
-                TableRow(children: [
-                  Text(
-                    "CT1",
-                    style: TextStyle(fontSize: 15.0),
+                DataRow(cells: [
+                  DataCell(
+                    Text(
+                      "CT2",
+                      style: TextStyle(fontSize: 15.0),
+                    ),
                   ),
-                  Text(
-                    studentMarks['ct1'].toString(),
-                    style: TextStyle(fontSize: 15.0),
-                  ),
-                ]),
-                TableRow(children: [
-                  Text(
-                    "CT2",
-                    style: TextStyle(fontSize: 15.0),
-                  ),
-                  Text(
-                    studentMarks['ct2'].toString(),
-                    style: TextStyle(fontSize: 15.0),
+                  DataCell(
+                    Text(
+                      studentMarks['ct2'].toString(),
+                      style: TextStyle(fontSize: 15.0),
+                    ),
                   ),
                 ]),
-                TableRow(children: [
-                  Text(
-                    "DHA",
-                    style: TextStyle(fontSize: 15.0),
+                DataRow(cells: [
+                  DataCell(
+                    Text(
+                      "DHA",
+                      style: TextStyle(fontSize: 15.0),
+                    ),
                   ),
-                  Text(
-                    studentMarks['dha'].toString(),
-                    style: TextStyle(fontSize: 15.0),
-                  ),
-                ]),
-                TableRow(children: [
-                  Text(
-                    "CA",
-                    style: TextStyle(fontSize: 15.0),
-                  ),
-                  Text(
-                    studentMarks['ca'].toString(),
-                    style: TextStyle(fontSize: 15.0),
+                  DataCell(
+                    Text(
+                      studentMarks['dha'].toString(),
+                      style: TextStyle(fontSize: 15.0),
+                    ),
                   ),
                 ]),
-                TableRow(children: [
-                  Text(
-                    "AA",
-                    style: TextStyle(fontSize: 15.0),
+                DataRow(cells: [
+                  DataCell(
+                    Text(
+                      "CA",
+                      style: TextStyle(fontSize: 15.0),
+                    ),
                   ),
-                  Text(
-                    studentMarks['aa'].toString(),
-                    style: TextStyle(fontSize: 15.0),
-                  ),
-                ]),
-                TableRow(children: [
-                  Text(
-                    "Attendance",
-                    style: TextStyle(fontSize: 15.0),
-                  ),
-                  Text(
-                    studentMarks['attendance'].toString(),
-                    style: TextStyle(fontSize: 15.0),
+                  DataCell(
+                    Text(
+                      studentMarks['ca'].toString(),
+                      style: TextStyle(fontSize: 15.0),
+                    ),
                   ),
                 ]),
-                TableRow(children: [
-                  Text(
-                    "Total",
-                    style: TextStyle(fontSize: 15.0),
+                DataRow(cells: [
+                  DataCell(
+                    Text(
+                      "AA",
+                      style: TextStyle(fontSize: 15.0),
+                    ),
                   ),
-                  Text(
-                    _totalMarks(studentMarks).toString(),
-                    style: TextStyle(fontSize: 15.0),
+                  DataCell(
+                    Text(
+                      studentMarks['aa'].toString(),
+                      style: TextStyle(fontSize: 15.0),
+                    ),
                   ),
                 ]),
-                TableRow(children: [
-                  Text(
-                    "Grade",
-                    style: TextStyle(fontSize: 15.0),
+                DataRow(cells: [
+                  DataCell(
+                    Text(
+                      "Attendance",
+                      style: TextStyle(fontSize: 15.0),
+                    ),
                   ),
-                  Text(
-                    studentMarks['grade'],
-                    style: TextStyle(fontSize: 15.0),
+                  DataCell(
+                    Text(
+                      studentMarks['attendance'].toString(),
+                      style: TextStyle(fontSize: 15.0),
+                    ),
+                  ),
+                ]),
+                DataRow(cells: [
+                  DataCell(
+                    Text(
+                      "Total",
+                      style: TextStyle(fontSize: 15.0),
+                    ),
+                  ),
+                  DataCell(
+                    Text(
+                      _totalMarks(studentMarks).toString(),
+                      style: TextStyle(fontSize: 15.0),
+                    ),
+                  ),
+                ]),
+                DataRow(cells: [
+                  DataCell(
+                    Text(
+                      "Grade",
+                      style: TextStyle(fontSize: 15.0),
+                    ),
+                  ),
+                  DataCell(
+                    Text(
+                      studentMarks['grade'],
+                      style: TextStyle(fontSize: 15.0),
+                    ),
                   ),
                 ]),
               ],

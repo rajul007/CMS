@@ -1,6 +1,7 @@
 import 'package:cms/db/mongodb.dart';
 import 'package:cms/users/login.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +20,12 @@ class MyApp extends StatelessWidget {
       title: 'CMS',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        appBarTheme: AppBarTheme(
+          // iconTheme: IconThemeData(color: Colors.black),
+          backgroundColor: Color.fromARGB(190, 0, 0, 0),
+          systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: Color.fromARGB(255, 54, 54, 54)),
+        ),
       ),
       home: CheckLoginState(),
     );
