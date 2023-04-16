@@ -18,7 +18,6 @@ class _CheckLoginStateState extends State<CheckLoginState> {
   }
 
   void checkLogin(String? token) async {
-    // print("Token ${token}");
     if (token == "" || token == null) {
       Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
         builder: (BuildContext context) {
@@ -77,6 +76,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[300],
       body: Container(
         padding: EdgeInsets.all(20),
         alignment: Alignment.center,
@@ -93,32 +93,81 @@ class _LoginState extends State<Login> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    TextField(
-                      controller: username,
-                      decoration: InputDecoration(
-                        labelText: "Username",
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10)),
+                    Icon(
+                      Icons.school_rounded,
+                      size: 150,
+                    ),
+                    Text(
+                      "CMS",
+                      style: TextStyle(
+                          fontSize: 40, color: Color.fromARGB(255, 83, 83, 83)),
+                    ),
+                    SizedBox(height: 50),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: TextField(
+                        controller: username,
+                        decoration: InputDecoration(
+                          labelText: "Username",
+                          contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(30)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.grey.shade400),
+                              borderRadius: BorderRadius.circular(30)),
+                          fillColor: Colors.grey.shade200,
+                          filled: true,
+                        ),
                       ),
                     ),
                     SizedBox(
                       height: 20,
                     ),
-                    TextField(
-                      controller: password,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: "Password",
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: TextField(
+                        controller: password,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          labelText: "Password",
+                          contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(30)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.grey.shade400),
+                              borderRadius: BorderRadius.circular(30)),
+                          fillColor: Colors.grey.shade200,
+                          filled: true,
+                        ),
                       ),
                     ),
                     SizedBox(height: 20),
-                    ElevatedButton(
-                        onPressed: isUsername && isPass
-                            ? () => _loginUser(username.text, password.text)
-                            : null,
-                        child: Text("Login")),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0,
+                      ),
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.black,
+                              foregroundColor: Colors.white,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 135, vertical: 15),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0))),
+                          onPressed: isUsername && isPass
+                              ? () => _loginUser(username.text, password.text)
+                              : null,
+                          child: Text(
+                            "Login",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )),
+                    ),
                   ],
                 ),
               )

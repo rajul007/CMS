@@ -33,9 +33,6 @@ class _DisplayMarksState extends State<DisplayMarks> {
       appBar: AppBar(
         centerTitle: true,
         title: Text('CMS'),
-        // actions: [
-        //   IconButton(onPressed: () => _logout(), icon: Icon(Icons.logout))
-        // ],
       ),
       body: SafeArea(
           child: Column(
