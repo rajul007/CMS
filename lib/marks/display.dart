@@ -24,6 +24,18 @@ class _DisplayMarksState extends State<DisplayMarks> {
     "grade": ""
   };
   bool isVisible = false;
+
+  bool isValid = false;
+  @override
+  void initState() {
+    super.initState();
+    courseCode.addListener(() {
+      setState(() {
+        isValid = courseCode.text.length == 6;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> user =
@@ -85,9 +97,11 @@ class _DisplayMarksState extends State<DisplayMarks> {
                               horizontal: 30, vertical: 15),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0))),
-                      onPressed: () => _getSubject(
-                          md.ObjectId.fromHexString(user["user"]),
-                          courseCode.text.toUpperCase()),
+                      onPressed: isValid
+                          ? () => _getSubject(
+                              md.ObjectId.fromHexString(user["user"]),
+                              courseCode.text.toUpperCase())
+                          : null,
                       child: Text("Submit"))
                 ],
               ),
