@@ -29,12 +29,13 @@ class _DisplayMarksState extends State<DisplayMarks> {
     Map<String, dynamic> user =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     return Scaffold(
+      drawer: drawerDetails(user),
       appBar: AppBar(
         centerTitle: true,
         title: Text('CMS'),
-        actions: [
-          IconButton(onPressed: () => _logout(), icon: Icon(Icons.logout))
-        ],
+        // actions: [
+        //   IconButton(onPressed: () => _logout(), icon: Icon(Icons.logout))
+        // ],
       ),
       body: SafeArea(
           child: Column(
@@ -72,6 +73,80 @@ class _DisplayMarksState extends State<DisplayMarks> {
       )),
     );
   }
+
+  Widget drawerDetails(Map<String, dynamic> user) {
+    return Drawer(
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            buildHeader(context, user),
+            buildMenuItems(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildHeader(BuildContext context, Map<String, dynamic> user) =>
+      Container(
+        color: Color.fromARGB(255, 58, 140, 221),
+        padding: EdgeInsets.only(
+            top: 20 + MediaQuery.of(context).padding.top, bottom: 20),
+        child: Column(
+          children: [
+            CircleAvatar(
+              radius: 50,
+              backgroundColor: Colors.blue[100],
+              child: Text(
+                "${user["name"][0].toUpperCase()}",
+                style: TextStyle(
+                    fontSize: 40, color: Color.fromARGB(199, 11, 67, 165)),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              "${user["name"]}",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Text(
+              "${user["username"]}",
+              style: TextStyle(color: Colors.white, fontSize: 15),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Text(
+              "${user["userType"]}"[0].toUpperCase() +
+                  "${user["userType"]}".substring(1),
+              style: TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
+      );
+
+  Widget buildMenuItems(BuildContext context) => Column(
+        children: [
+          ListTile(
+            leading: const Icon(Icons.logout),
+            title: const Text("Logout", style: TextStyle(fontSize: 15)),
+            onTap: () async {
+              final storage = new FlutterSecureStorage();
+              await storage.deleteAll();
+              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return const Login();
+                },
+              ), (route) => false);
+            },
+          )
+        ],
+      );
 
   Future<void> _getSubject(md.ObjectId user, String courseCode) async {
     var result = await MongoDatabase.getSubject(courseCode);

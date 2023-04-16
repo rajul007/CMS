@@ -9,12 +9,16 @@ class MongoDatabase {
   static var db, users, marks, subjects;
 
   static connect() async {
-    db = await Db.create(mongoURI);
-    await db.open();
-    inspect(db);
-    users = db.collection(usersCollection);
-    marks = db.collection(marksCollection);
-    subjects = db.collection(subjectsCollection);
+    try {
+      db = await Db.create(mongoURI);
+      await db.open();
+      inspect(db);
+      users = db.collection(usersCollection);
+      marks = db.collection(marksCollection);
+      subjects = db.collection(subjectsCollection);
+    } catch (e) {
+      print("No Internet Connection");
+    }
   }
 
   static Future<dynamic> getSubject(String courseCode) async {
