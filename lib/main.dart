@@ -2,8 +2,10 @@ import 'package:cms/db/mongodb.dart';
 import 'package:cms/users/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
+  await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
   await MongoDatabase.connect();
   runApp(const MyApp());
