@@ -1,46 +1,40 @@
-import 'package:cms/db/mongodb.dart';
+import 'package:cms/context/auth/auth_state.dart';
 import 'package:cms/marks/display.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
 
-class CheckLoginState extends StatefulWidget {
-  const CheckLoginState({super.key});
+class SessionManager extends StatefulWidget {
+  const SessionManager({super.key});
 
   @override
-  State<CheckLoginState> createState() => _CheckLoginStateState();
+  State<SessionManager> createState() => _SessionManagerState();
 }
 
-class _CheckLoginStateState extends State<CheckLoginState> {
+class _SessionManagerState extends State<SessionManager> {
+  late AuthProvider authState;
+  bool isLoggedIn = false;
+  @override
   void initState() {
     super.initState();
-    MongoDatabase.getState().then((token) {
-      checkLogin(token);
-    });
+    checkLoginStatus();
   }
 
-  void checkLogin(String? token) async {
-    if (token == "" || token == null) {
-      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-        builder: (BuildContext context) {
-          return Login();
-        },
-      ), (route) => false);
-    } else {
-      String auth_token = token;
-      final userData = MongoDatabase.verifyToken(auth_token);
-
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-              builder: (BuildContext context) {
-                return DisplayMarks();
-              },
-              settings: RouteSettings(arguments: userData)),
-          (route) => false);
+  Future<void> checkLoginStatus() async {
+    const storage = FlutterSecureStorage();
+    String? token = await storage.read(key: "token");
+    if (token != null) {
+      authState = Provider.of<AuthProvider>(context, listen: false);
+      authState.setUserDetails(token);
+      setState(() {
+        isLoggedIn = true;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return isLoggedIn ? const DisplayMarks() : const Login();
   }
 }
 
@@ -75,10 +69,11 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    var authState = Provider.of<AuthProvider>(context);
     return Scaffold(
       backgroundColor: Colors.grey[300],
       body: Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         alignment: Alignment.center,
         child: LayoutBuilder(
           builder: (context, constraints) => ListView(
@@ -93,25 +88,26 @@ class _LoginState extends State<Login> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Icon(
+                    const Icon(
                       Icons.school_rounded,
                       size: 150,
                     ),
-                    Text(
+                    const Text(
                       "CMS",
                       style: TextStyle(
                           fontSize: 40, color: Color.fromARGB(255, 83, 83, 83)),
                     ),
-                    SizedBox(height: 50),
+                    const SizedBox(height: 50),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: TextField(
                         controller: username,
                         decoration: InputDecoration(
                           labelText: "Username",
-                          contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 20),
                           enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
+                              borderSide: const BorderSide(color: Colors.white),
                               borderRadius: BorderRadius.circular(30)),
                           focusedBorder: OutlineInputBorder(
                               borderSide:
@@ -122,7 +118,7 @@ class _LoginState extends State<Login> {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     Padding(
@@ -132,9 +128,10 @@ class _LoginState extends State<Login> {
                         obscureText: true,
                         decoration: InputDecoration(
                           labelText: "Password",
-                          contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 20),
                           enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
+                              borderSide: const BorderSide(color: Colors.white),
                               borderRadius: BorderRadius.circular(30)),
                           focusedBorder: OutlineInputBorder(
                               borderSide:
@@ -145,7 +142,7 @@ class _LoginState extends State<Login> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20.0,
@@ -154,14 +151,15 @@ class _LoginState extends State<Login> {
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.black,
                               foregroundColor: Colors.white,
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                   horizontal: 135, vertical: 15),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30.0))),
                           onPressed: isUsername && isPass
-                              ? () => _loginUser(username.text, password.text)
+                              ? () => authState.loginUser(
+                                  context, username.text, password.text)
                               : null,
-                          child: Text(
+                          child: const Text(
                             "Login",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -176,23 +174,5 @@ class _LoginState extends State<Login> {
         ),
       ),
     );
-  }
-
-  Future<void> _loginUser(String username, String password) async {
-    var result = await MongoDatabase.login(username, password);
-    ;
-    if (result == false) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Please try to login with correct credentials")));
-    } else {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-              builder: (BuildContext context) {
-                return DisplayMarks();
-              },
-              settings:
-                  RouteSettings(arguments: MongoDatabase.verifyToken(result))),
-          (route) => false);
-    }
   }
 }

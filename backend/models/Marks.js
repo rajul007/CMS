@@ -35,7 +35,7 @@ const MarksSchema = new Schema({
         required: true
     },
     attendance:{
-        type: String,
+        type: Number,
         required: true
     },
   });

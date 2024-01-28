@@ -1,14 +1,14 @@
-import 'package:cms/db/mongodb.dart';
+import 'package:cms/context/auth/auth_state.dart';
 import 'package:cms/users/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
 
-void main() async {
-  await dotenv.load(fileName: ".env");
-  WidgetsFlutterBinding.ensureInitialized();
-  await MongoDatabase.connect();
-  runApp(const MyApp());
+void main() {
+  runApp(ChangeNotifierProvider(
+    create: (context) => AuthProvider(),
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -22,14 +22,14 @@ class MyApp extends StatelessWidget {
       title: 'CMS',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        appBarTheme: AppBarTheme(
+        appBarTheme: const AppBarTheme(
           // iconTheme: IconThemeData(color: Colors.black),
           backgroundColor: Color.fromARGB(190, 0, 0, 0),
           systemOverlayStyle: SystemUiOverlayStyle(
               statusBarColor: Color.fromARGB(255, 54, 54, 54)),
         ),
       ),
-      home: CheckLoginState(),
+      home: const SessionManager(),
     );
   }
 }
